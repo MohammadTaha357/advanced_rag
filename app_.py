@@ -5,7 +5,6 @@ import shutil
 from collections import Counter
 from dataclasses import dataclass
 from io import BytesIO
-
 import cohere
 import pymupdf
 import pytesseract
@@ -201,9 +200,256 @@ def show_retrieval(results):
             st.write(chunk.text)
 
 
+
+def apply_navy_theme():
+    st.markdown(
+        """
+        <style>
+        /* ===== GLOBAL NAVY + BLACK THEME ===== */
+        :root {
+            --bg-0: #020617;
+            --bg-1: #071225;
+            --bg-2: #0b1930;
+            --navy: #0f2a52;
+            --blue: #2563eb;
+            --cyan: #38bdf8;
+            --text: #e6f1ff;
+            --muted: #8fa8c7;
+            --border: rgba(80, 150, 255, 0.20);
+            --glass: rgba(7, 18, 37, 0.72);
+        }
+
+        /* Main background */
+        .stApp {
+            background:
+                radial-gradient(circle at 12% 8%, rgba(37, 99, 235, 0.20), transparent 28%),
+                radial-gradient(circle at 88% 18%, rgba(56, 189, 248, 0.12), transparent 25%),
+                radial-gradient(circle at 50% 100%, rgba(15, 42, 82, 0.35), transparent 38%),
+                linear-gradient(135deg, #01030a 0%, #020617 42%, #06142b 100%);
+            color: var(--text);
+        }
+
+        /* Subtle background grid */
+        .stApp::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.16;
+            background-image:
+                linear-gradient(rgba(80,150,255,.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(80,150,255,.06) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: linear-gradient(to bottom, black, transparent 85%);
+        }
+
+        /* Main content width / spacing */
+        .block-container {
+            padding-top: 2.2rem;
+            padding-bottom: 3rem;
+            max-width: 1450px;
+        }
+
+        /* ===== TITLE ===== */
+        h1 {
+            font-size: 2.55rem !important;
+            font-weight: 800 !important;
+            letter-spacing: -1.2px;
+            background: linear-gradient(90deg, #ffffff 0%, #93c5fd 45%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 35px rgba(37,99,235,.18);
+        }
+
+        h2, h3 {
+            color: #dbeafe !important;
+            letter-spacing: -.3px;
+        }
+
+        /* ===== SIDEBAR ===== */
+        section[data-testid="stSidebar"] {
+            background:
+                radial-gradient(circle at 20% 5%, rgba(37,99,235,.22), transparent 30%),
+                linear-gradient(180deg, #030712 0%, #061329 55%, #020617 100%);
+            border-right: 1px solid rgba(56,189,248,.14);
+            box-shadow: 12px 0 40px rgba(0,0,0,.35);
+        }
+
+        section[data-testid="stSidebar"] > div {
+            padding-top: 1.4rem;
+        }
+
+        section[data-testid="stSidebar"] h2,
+        section[data-testid="stSidebar"] h3 {
+            color: #bfdbfe !important;
+        }
+
+        /* Sidebar separators */
+        section[data-testid="stSidebar"] hr {
+            border-color: rgba(96,165,250,.14);
+        }
+
+        /* ===== GLASS CARDS ===== */
+        div[data-testid="stMetric"],
+        div[data-testid="stFileUploader"],
+        div[data-testid="stExpander"],
+        div[data-testid="stAlert"] {
+            background: linear-gradient(
+                145deg,
+                rgba(10, 28, 55, .78),
+                rgba(2, 8, 23, .78)
+            );
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow:
+                0 12px 35px rgba(0,0,0,.24),
+                inset 0 1px 0 rgba(255,255,255,.035);
+            backdrop-filter: blur(12px);
+        }
+
+        /* File uploader */
+        div[data-testid="stFileUploader"] {
+            padding: .45rem;
+        }
+
+        div[data-testid="stFileUploader"] section {
+            background: transparent;
+            border: 1px dashed rgba(96,165,250,.28);
+            border-radius: 13px;
+        }
+
+        /* ===== INPUTS ===== */
+        .stTextInput input,
+        .stNumberInput input,
+        .stTextArea textarea {
+            background: rgba(2, 8, 23, .88) !important;
+            color: #e5f0ff !important;
+            border: 1px solid rgba(96,165,250,.22) !important;
+            border-radius: 10px !important;
+        }
+
+        .stTextInput input:focus,
+        .stNumberInput input:focus,
+        .stTextArea textarea:focus {
+            border-color: rgba(56,189,248,.70) !important;
+            box-shadow: 0 0 0 2px rgba(56,189,248,.10),
+                        0 0 22px rgba(37,99,235,.18) !important;
+        }
+
+        /* ===== SLIDERS ===== */
+        div[data-baseweb="slider"] div[role="slider"] {
+            background: #38bdf8 !important;
+            box-shadow: 0 0 12px rgba(56,189,248,.65);
+        }
+
+        /* ===== BUTTONS ===== */
+        .stButton > button {
+            border: 1px solid rgba(96,165,250,.30) !important;
+            border-radius: 11px !important;
+            color: #eaf4ff !important;
+            background: linear-gradient(135deg, #0b1f3d 0%, #0d3263 55%, #102a52 100%) !important;
+            box-shadow: 0 8px 22px rgba(0,0,0,.25);
+            transition: all .2s ease-in-out;
+        }
+
+        .stButton > button:hover {
+            transform: translateY(-1px);
+            border-color: rgba(56,189,248,.70) !important;
+            box-shadow: 0 0 22px rgba(37,99,235,.30),
+                        0 10px 28px rgba(0,0,0,.30);
+        }
+
+        .stButton > button[kind="primary"] {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #0284c7 100%) !important;
+            border-color: rgba(125,211,252,.55) !important;
+            box-shadow: 0 0 25px rgba(37,99,235,.28);
+        }
+
+        /* ===== CHAT ===== */
+        div[data-testid="stChatMessage"] {
+            border: 1px solid rgba(96,165,250,.13);
+            border-radius: 16px;
+            margin: .55rem 0;
+            background: linear-gradient(
+                135deg,
+                rgba(8, 24, 49, .72),
+                rgba(2, 8, 23, .68)
+            );
+            box-shadow: 0 8px 25px rgba(0,0,0,.16);
+        }
+
+        /* Chat input */
+        div[data-testid="stChatInput"] {
+            background: rgba(2,8,23,.86);
+            border: 1px solid rgba(56,189,248,.22);
+            border-radius: 16px;
+            box-shadow: 0 0 28px rgba(15,42,82,.25);
+        }
+
+        div[data-testid="stChatInput"] textarea {
+            background: transparent !important;
+            color: #e5f0ff !important;
+        }
+
+        /* ===== EXPANDERS ===== */
+        div[data-testid="stExpander"] summary {
+            color: #cfe4ff !important;
+        }
+
+        /* ===== METRICS ===== */
+        div[data-testid="stMetricLabel"] {
+            color: #8fb0d5 !important;
+        }
+
+        div[data-testid="stMetricValue"] {
+            color: #eaf4ff !important;
+            text-shadow: 0 0 16px rgba(56,189,248,.16);
+        }
+
+        /* ===== TEXT ===== */
+        p, label, .stMarkdown {
+            color: #c9d9ee;
+        }
+
+        .stCaption {
+            color: #7895b7 !important;
+        }
+
+        /* Status messages */
+        div[data-testid="stAlert"] {
+            color: #dbeafe;
+        }
+
+        /* Hide Streamlit decoration */
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header[data-testid="stHeader"] {
+            background: transparent;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 9px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(#102a52, #2563eb);
+            border-radius: 20px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #38bdf8;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 def main():
-    st.set_page_config(page_title=APP_TITLE, page_icon="📚", layout="wide")
-    st.title(APP_TITLE)
+    st.set_page_config(page_title=APP_TITLE, page_icon="📚", layout="wide", initial_sidebar_state="expanded")
+    apply_navy_theme()
+    st.title("📚 " + APP_TITLE)
 
     with st.sidebar:
         st.header("API Keys")
