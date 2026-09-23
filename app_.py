@@ -457,7 +457,7 @@ def main():
         cohere_api_key = st.text_input("Cohere API key", type="password")
 
         st.header("Model")
-        groq_model = "openai/gpt-oss-120b"
+        groq_model = st.text_input("Groq model", value="groq-13b", help="Use a Groq model that supports chat completions, e.g. groq-13b or groq-70b.")
         temperature = st.slider("Temperature", min_value=0.0, max_value=1.0, value=0.2, step=0.05)
 
         st.header("Retrieval")
@@ -547,8 +547,7 @@ def main():
                 st.session_state.last_retrieval = retrieved
                 context = build_context(retrieved)
 
-                st.write("DEBUG MODEL:", groq_model)
-                st.write("DEBUG KEY:", bool(groq_api_key))
+
                 answer = answer_with_groq(
                     groq_api_key,
                     groq_model,
