@@ -522,44 +522,44 @@ def main():
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
-        while question:
-            question = st.chat_input("Ask a question about your PDFs")
-            if question:
-                st.session_state.messages.append({"role": "user", "content": question})
-                with st.chat_message("user"):
-                    st.markdown(question)
 
-                if not groq_api_key:
-                    st.error("Add your Groq API key in the sidebar.")
-                    return
-                if not st.session_state.chunks:
-                    st.error("Upload and process at least one PDF first.")
-                    return
+        question = st.chat_input("Ask a question about your PDFs")
+        if question:
+            st.session_state.messages.append({"role": "user", "content": question})
+            with st.chat_message("user"):
+                st.chat_message("user").markdown(question)
 
-                with st.spinner("Retrieving, reranking, and asking Groq..."):
-                    bm25 = BM25Index(st.session_state.chunks)
-                    candidates = bm25.search(question, retrieval_k)
-                    if cohere_api_key:
-                        retrieved = rerank_with_cohere(cohere_api_key, question, candidates, rerank_top_n)
-                    else:
-                        retrieved = candidates[:rerank_top_n]
+            if not groq_api_key:
+                st.error("Add your Groq API key in the sidebar.")
+                return
+            if not st.session_state.chunks:
+                st.error("Upload and process at least one PDF first.")
+                return
 
-                    st.session_state.last_retrieval = retrieved
-                    context = build_context(retrieved)
+            with st.spinner("Retrieving, reranking, and asking Groq..."):
+                bm25 = BM25Index(st.session_state.chunks)
+                candidates = bm25.search(question, retrieval_k)
+                if cohere_api_key:
+                    retrieved = rerank_with_cohere(cohere_api_key, question, candidates, rerank_top_n)
+                else:
+                    retrieved = candidates[:rerank_top_n]
+
+                st.session_state.last_retrieval = retrieved
+                context = build_context(retrieved)
 
 
-                    answer = answer_with_groq(
-                        groq_api_key,
-                        groq_model,
-                        question,
-                        context,
-                        temperature,
-                        st.session_state.messages[:-1],
-                    )
+                answer = answer_with_groq(
+                    groq_api_key,
+                    groq_model,
+                    question,
+                    context,
+                    temperature,
+                    st.session_state.messages[:-1],
+                )
 
-                st.session_state.messages.append({"role": "assistant", "content": answer})
-                with st.chat_message("assistant"):
-                    st.markdown(answer)
+            st.session_state.messages.append({"role": "assistant", "content": answer})
+            with st.chat_message("assistant"):
+                st.chat_message("assistant").markdown(answer)
 
     with right:
         st.subheader("Index")
