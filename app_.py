@@ -520,7 +520,7 @@ def main():
 
         st.subheader("Chat")
         for message in st.session_state.messages:
-            with st.chat_message(message["user"]):
+            with st.chat_message(message["role"]):
                 st.markdown(message["content"])
         while question:
             question = st.chat_input("Ask a question about your PDFs")
