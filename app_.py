@@ -527,7 +527,7 @@ def main():
         if question:
             st.session_state.messages.append({"role": "user", "content": question})
             with st.chat_message("user"):
-                st.chat_message("user").markdown(question)
+                st.markdown(question)
 
             if not groq_api_key:
                 st.error("Add your Groq API key in the sidebar.")
@@ -559,7 +559,7 @@ def main():
 
             st.session_state.messages.append({"role": "assistant", "content": answer})
             with st.chat_message("assistant"):
-                st.chat_message("assistant").markdown(answer)
+                st.markdown(answer)
 
     with right:
         st.subheader("Index")
